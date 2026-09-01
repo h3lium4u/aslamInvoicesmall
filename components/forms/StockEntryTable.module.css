@@ -23,9 +23,30 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 12px 14px;
+  padding: 10px 14px;
   text-align: left;
   border-bottom: 1px solid var(--border-subtle);
+}
+
+.superHeaderInward {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+  color: var(--accent-green) !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  border-right: 1px solid var(--border-subtle) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  letter-spacing: 1px !important;
+  font-size: 11px !important;
+}
+
+.superHeaderDespatches {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+  color: #60a5fa !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  letter-spacing: 1px !important;
+  font-size: 11px !important;
 }
 
 .row {

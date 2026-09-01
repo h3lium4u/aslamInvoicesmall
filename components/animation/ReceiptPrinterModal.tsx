@@ -172,6 +172,10 @@ export function ReceiptPrinterModal({
                 {/* Items or Summary section */}
                 {reportType === 'statement' ? (
                   <div className={styles.receiptItemsSection}>
+                    <div className="flex justify-between text-[8px] font-bold text-emerald-700 border-b border-neutral-300 pb-0.5 mb-1">
+                      <span>[INWARD: S.NO / DA / PART]</span>
+                      <span>[DESPATCHES]</span>
+                    </div>
                     <div className={styles.receiptItemHeader}>
                       <span className={styles.colSNo}>S.NO</span>
                       <span className={styles.colDa}>DA NO</span>

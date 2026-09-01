@@ -171,6 +171,14 @@ export default function ViewRecordPage({
           <table className={styles.table}>
             <thead>
               <tr>
+                <th colSpan={4} style={{ textAlign: 'center', backgroundColor: 'rgba(16, 185, 129, 0.08)', color: 'var(--accent-green)', fontWeight: 700, letterSpacing: '1px' }}>
+                  INWARD
+                </th>
+                <th colSpan={2} style={{ textAlign: 'center', backgroundColor: 'rgba(59, 130, 246, 0.08)', color: '#60a5fa', fontWeight: 700, letterSpacing: '1px' }}>
+                  DESPATCHES
+                </th>
+              </tr>
+              <tr>
                 <th style={{ width: '60px' }}>S.No.</th>
                 <th style={{ width: '140px' }}>DA No.</th>
                 <th style={{ width: '140px' }}>Date</th>

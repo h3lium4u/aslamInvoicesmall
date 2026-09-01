@@ -213,6 +213,16 @@ export function StockStatementDocument({ statement, generatedAt }: PDFDocumentPr
 
           {/* Table */}
           <View style={styles.table}>
+            {/* Top Super-Header Row: INWARD (64%) & DESPATCHES (36%) */}
+            <View style={{ flexDirection: 'row', marginBottom: 1 }}>
+              <Text style={{ width: '64%', backgroundColor: '#10b981', color: '#FFFFFF', fontSize: 8, fontFamily: 'Helvetica-Bold', textAlign: 'center', paddingVertical: 3, letterSpacing: 1 }}>
+                INWARD
+              </Text>
+              <Text style={{ width: '36%', backgroundColor: '#3b82f6', color: '#FFFFFF', fontSize: 8, fontFamily: 'Helvetica-Bold', textAlign: 'center', paddingVertical: 3, letterSpacing: 1 }}>
+                DESPATCHES
+              </Text>
+            </View>
+
             <View style={styles.tableHeader}>
               <Text style={[styles.tableHeaderText, styles.colSno]}>S.No</Text>
               <Text style={[styles.tableHeaderText, styles.colDa]}>DA No.</Text>

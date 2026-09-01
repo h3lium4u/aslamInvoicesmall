@@ -48,6 +48,19 @@ export function StockEntryTable({ items, onChange, errors = [] }: StockEntryTabl
       <div className={styles.tableScroll}>
         <table className={styles.table}>
           <thead>
+            {/* Top Super-Headers: INWARD (4 cols) and DESPATCHES (2 cols) */}
+            <tr>
+              <th colSpan={4} className={styles.superHeaderInward}>
+                INWARD
+              </th>
+              <th colSpan={2} className={styles.superHeaderDespatches}>
+                DESPATCHES
+              </th>
+              <th rowSpan={2} style={{ width: '80px', textAlign: 'center', verticalAlign: 'middle' }}>
+                Action
+              </th>
+            </tr>
+            {/* Sub-Headers */}
             <tr>
               <th style={{ width: '50px' }}>S.No.</th>
               <th style={{ width: '180px' }}>DA No. *</th>
@@ -55,7 +68,6 @@ export function StockEntryTable({ items, onChange, errors = [] }: StockEntryTabl
               <th style={{ width: '160px' }}>Part No. *</th>
               <th style={{ width: '180px' }}>Despatches</th>
               <th style={{ width: '140px', textAlign: 'right' }}>Closing Stock *</th>
-              <th style={{ width: '80px', textAlign: 'center' }}>Action</th>
             </tr>
           </thead>
           <tbody>
