@@ -88,15 +88,16 @@ input, select, textarea {
   color-scheme: dark;
 }
 
-/* Force HTML5 date picker calendar icon to be bright white & clearly visible */
+/* Force HTML5 date picker calendar icon to be bright pure white */
 input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(2) !important;
+  filter: invert(1) brightness(10) !important;
   cursor: pointer;
-  opacity: 0.95 !important;
+  opacity: 1 !important;
   padding: 2px;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  filter: invert(1) brightness(10) !important;
   opacity: 1 !important;
 }
 
