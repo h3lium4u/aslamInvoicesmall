@@ -1,0 +1,20 @@
+.container {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  width: 100%;
+}
+
+.ambientGlow {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(16, 185, 129, 0.03) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+}

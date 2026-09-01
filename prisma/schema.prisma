@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Statement {
+  id               String   @id @default(cuid())
+  statementNumber  String   @unique @map("statement_number")
+  industryName     String   @default("WESTERN INDUSTRIES") @map("industry_name")
+  vendorName       String   @map("vendor_name")
+  vendorCode       String   @map("vendor_code")
+  month            Int
+  year             Int
+  status           String   @default("saved")
+  pdfUrl           String?  @map("pdf_url")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  items            StatementItem[]
+
+  @@index([month, year])
+  @@index([vendorCode])
+  @@index([vendorName])
+  @@map("statements")
+}
+
+model StatementItem {
+  id           String    @id @default(cuid())
+  statementId  String    @map("statement_id")
+  serialNumber Int       @map("serial_number")
+  daNumber     String?   @map("da_number")
+  entryDate    DateTime  @map("entry_date")
+  partNumber   String    @map("part_number")
+  despatches   String?   @map("despatches")
+  openingStock Decimal   @default(0) @map("opening_stock")
+  closingStock Decimal   @default(0) @map("closing_stock")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  statement    Statement @relation(fields: [statementId], references: [id], onDelete: Cascade)
+
+  @@index([statementId])
+  @@index([daNumber])
+  @@index([partNumber])
+  @@map("statement_items")
+}

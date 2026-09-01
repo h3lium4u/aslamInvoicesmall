@@ -1,0 +1,194 @@
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.topActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.backBtn {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.backBtn:hover {
+  color: var(--text-primary);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 12px;
+}
+
+.pdfBtn {
+  padding: 8px 16px;
+  background-color: var(--accent-green);
+  color: var(--text-inverse);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.editBtn {
+  padding: 8px 16px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.deleteBtn {
+  padding: 8px 16px;
+  background-color: var(--danger-red-bg);
+  border: 1px solid var(--danger-red-border);
+  color: var(--danger-red);
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.documentCard {
+  background-color: #ffffff;
+  color: #111111;
+  border-radius: var(--radius-md);
+  padding: 40px;
+  box-shadow: var(--shadow-lg);
+  font-family: var(--font-sans);
+}
+
+.docHeader {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.companyTitle {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #111111;
+}
+
+.docSubtitle {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #333333;
+  margin-top: 4px;
+  margin-bottom: 16px;
+}
+
+.headerLine {
+  height: 2px;
+  background-color: #111111;
+  width: 100%;
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+  background-color: #f8f9fa;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #e9ecef;
+}
+
+.metaBox {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metaLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #6c757d;
+  letter-spacing: 0.5px;
+}
+
+.metaValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.metaValueBadge {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111111;
+  font-family: monospace;
+}
+
+.tableWrapper {
+  border: 1px solid #dee2e6;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: left;
+}
+
+.row {
+  border-bottom: 1px solid #e9ecef;
+}
+
+.row:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.row td {
+  padding: 10px 14px;
+  color: #333333;
+}
+
+.sNoCell {
+  font-weight: 600;
+  color: #6c757d;
+}
+
+.partNoCell {
+  font-weight: 600;
+}
+
+.numericCell {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.docFooter {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #6c757d;
+  border-top: 1px solid #dee2e6;
+  padding-top: 16px;
+}

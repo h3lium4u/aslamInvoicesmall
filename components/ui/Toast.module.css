@@ -1,0 +1,69 @@
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  max-width: 400px;
+}
+
+.success {
+  border-color: var(--accent-green-border);
+}
+
+.success .icon {
+  color: var(--accent-green);
+  background-color: var(--accent-green-bg);
+}
+
+.error {
+  border-color: var(--danger-red-border);
+}
+
+.error .icon {
+  color: var(--danger-red);
+  background-color: var(--danger-red-bg);
+}
+
+.info .icon {
+  color: var(--text-secondary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.message {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.closeBtn {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+}
+
+.closeBtn:hover {
+  color: var(--text-primary);
+}
