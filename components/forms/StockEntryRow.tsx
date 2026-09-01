@@ -57,6 +57,7 @@ export function StockEntryRow({
           value={item.entryDate ? item.entryDate.substring(0, 10) : ''}
           onChange={(e) => onChange(index, 'entryDate', e.target.value)}
           className={`${styles.input} ${errors.entryDate ? styles.inputError : ''}`}
+          style={{ colorScheme: 'dark' }}
         />
       </td>
 
