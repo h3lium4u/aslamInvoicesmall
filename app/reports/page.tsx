@@ -41,6 +41,31 @@ export default function ReportsPage() {
 
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
+  const fetchReport = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const url = `/api/reports?mode=${mode}&month=${month}&year=${year}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Failed to load report data');
+      const json = await res.json();
+
+      if (mode === 'monthly') {
+        setMonthlyData(json.data);
+      } else {
+        setYearlyData(json.data);
+      }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [mode, month, year]);
+
+  useEffect(() => {
+    fetchReport();
+  }, [fetchReport]);
+
   // Printer animation state for Excel reports
   const [excelModalData, setExcelModalData] = useState<{
     reportType: 'monthly' | 'yearly';
