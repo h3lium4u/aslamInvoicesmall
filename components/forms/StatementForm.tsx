@@ -27,6 +27,16 @@ const MONTHS = [
 const currentYear = new Date().getFullYear();
 const YEARS = Array.from({ length: 11 }, (_, i) => currentYear - 5 + i);
 
+// Helper to check if a row has any user-entered content
+function isRowFilled(item: StatementItemInput): boolean {
+  const da = (item.daNumber || '').replace(/^DA-?/i, '').trim();
+  const part = (item.partNumber || '').trim();
+  const desp = (item.despatches || '').trim();
+  const closing = Number(item.closingStock) || 0;
+
+  return Boolean(da || part || desp || closing > 0);
+}
+
 interface StatementFormProps {
   initialData?: Statement;
   isEditing?: boolean;
@@ -48,6 +58,7 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
     initialData?.year || new Date().getFullYear()
   );
 
+  // Initialize with 10 rows by default if creating a new entry
   const [items, setItems] = useState<StatementItemInput[]>(
     initialData?.items
       ? initialData.items.map((it) => ({
@@ -58,16 +69,14 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
           openingStock: Number(it.openingStock),
           closingStock: Number(it.closingStock),
         }))
-      : [
-          {
-            daNumber: '',
-            entryDate: todayStr,
-            partNumber: '',
-            despatches: '',
-            openingStock: 0,
-            closingStock: 0,
-          },
-        ]
+      : Array.from({ length: 10 }, () => ({
+          daNumber: '',
+          entryDate: todayStr,
+          partNumber: '',
+          despatches: '',
+          openingStock: 0,
+          closingStock: 0,
+        }))
   );
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -90,18 +99,29 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
   }, [isDirty]);
 
   const validate = (): boolean => {
+    const filledItems = items.filter(isRowFilled);
+
+    if (filledItems.length === 0) {
+      setToast({
+        message: 'Please fill in at least one stock entry before saving.',
+        type: 'error',
+      });
+      return false;
+    }
+
     const rErrors: Record<string, string>[] = [];
     let hasRowError = false;
 
-    items.forEach((item, idx) => {
+    items.forEach((item) => {
       const rErr: Record<string, string> = {};
-      if (!item.daNumber || !item.daNumber.trim()) rErr.daNumber = 'Required';
-      if (!item.entryDate) rErr.entryDate = 'Required';
-      if (!item.partNumber || !item.partNumber.trim()) rErr.partNumber = 'Required';
-      if (isNaN(item.openingStock) || item.openingStock < 0)
-        rErr.openingStock = 'Invalid stock number';
-      if (isNaN(item.closingStock) || item.closingStock < 0)
-        rErr.closingStock = 'Invalid stock number';
+
+      // Only validate row if it has content
+      if (isRowFilled(item)) {
+        if (!item.entryDate) rErr.entryDate = 'Required';
+        if (!item.partNumber || !item.partNumber.trim()) rErr.partNumber = 'Required';
+        if (isNaN(item.closingStock) || item.closingStock < 0)
+          rErr.closingStock = 'Invalid stock number';
+      }
 
       rErrors.push(rErr);
       if (Object.keys(rErr).length > 0) hasRowError = true;
@@ -111,7 +131,7 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
 
     if (hasRowError) {
       setToast({
-        message: 'Please resolve the highlighted errors in the stock table before saving.',
+        message: 'Please resolve highlighted errors in your filled stock rows.',
         type: 'error',
       });
       return false;
@@ -124,17 +144,21 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
 
     setIsSubmitting(true);
 
+    // Filter out completely blank/empty rows before sending to backend DB/Excel/PDF
+    const filledItems = items.filter(isRowFilled);
+
     const payload: CreateStatementInput & { forceCreate?: boolean } = {
       industryName,
       vendorCode,
       vendorName,
       month,
       year,
-      items: items.map((it) => ({
+      items: filledItems.map((it) => ({
         ...it,
         daNumber: it.daNumber?.trim() || undefined,
         partNumber: it.partNumber.trim(),
-        openingStock: Number(it.openingStock),
+        despatches: it.despatches?.trim() || undefined,
+        openingStock: Number(it.openingStock) || 0,
         closingStock: Number(it.closingStock),
       })),
       forceCreate,
@@ -184,14 +208,13 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
 
   // Printer animation modal state
   const [printerModalData, setPrinterModalData] = useState<any>(null);
-  // Guard: ensure PDF download fires exactly once per modal open
   const pdfDownloadFiredRef = useRef(false);
 
   const handleSaveAndPdf = async () => {
     setIsDownloadingPdf(true);
     const saved = await saveStatement();
     if (saved) {
-      pdfDownloadFiredRef.current = false; // reset guard for this new modal session
+      pdfDownloadFiredRef.current = false;
       setPrinterModalData({
         statementId: saved.id,
         statementNumber: saved.statementNumber,
@@ -208,7 +231,6 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
   };
 
   const triggerActualPdfDownload = useCallback(async () => {
-    // Prevent firing more than once per modal open
     if (pdfDownloadFiredRef.current) return;
     pdfDownloadFiredRef.current = true;
 
@@ -346,7 +368,7 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
       <div className={styles.sectionCard}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>Stock Entry Table</h2>
-          <span className={styles.sectionBadge}>INWARD & DISPATCH REGISTRATION</span>
+          <span className={styles.sectionBadge}>10 INITIAL ROWS — UNFILLED ROWS IGNORED ON SAVE</span>
         </div>
 
         <StockEntryTable
