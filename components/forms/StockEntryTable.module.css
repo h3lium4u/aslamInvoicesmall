@@ -76,6 +76,13 @@
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-size: 13px;
+  color-scheme: dark;
+}
+
+.input::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(10);
+  cursor: pointer;
+  opacity: 1;
 }
 
 /* DA Input with un-editable prefix and transparent 001 placeholder */

@@ -88,17 +88,18 @@ input, select, textarea {
   color-scheme: dark;
 }
 
-/* Force HTML5 date picker calendar icon to be bright pure white */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(10) !important;
+/* Force HTML5 date picker calendar icon to be pure white */
+input[type="date"],
+input[type="date"].input {
+  color-scheme: dark;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="date"].input::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(100) !important;
   cursor: pointer;
   opacity: 1 !important;
   padding: 2px;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator:hover {
-  filter: invert(1) brightness(10) !important;
-  opacity: 1 !important;
 }
 
 input:focus, select:focus, textarea:focus {
