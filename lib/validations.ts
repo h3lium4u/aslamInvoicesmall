@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const StatementItemSchema = z.object({
   daNumber: z.string().optional(),
-  entryDate: z.string().min(1, "Date is required"),
-  partNumber: z.string().min(1, "Part number is required"),
+  entryDate: z.string().optional(),
+  partNumber: z.string().optional(),
   despatches: z.string().optional(),
   openingStock: z.number().default(0),
   closingStock: z
@@ -25,6 +25,7 @@ export const CreateStatementSchema = z.object({
     .int()
     .min(2000, "Year must be 2000 or later")
     .max(2100, "Year must be 2100 or earlier"),
+  statementDate: z.string().optional(),
   items: z
     .array(StatementItemSchema)
     .min(1, "At least one stock entry is required"),

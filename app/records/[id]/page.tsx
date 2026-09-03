@@ -14,7 +14,7 @@ const MONTHS = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
-function formatDate(d: string): string {
+function formatDate(d?: string | null): string {
   if (!d) return '—';
   return new Date(d).toLocaleDateString('en-IN', {
     day: '2-digit',
@@ -153,6 +153,10 @@ export default function ViewRecordPage({
             <span className={styles.metaValueBadge}>{statement.statementNumber}</span>
           </div>
           <div className={styles.metaBox}>
+            <span className={styles.metaLabel}>Statement Date</span>
+            <span className={styles.metaValue}>{formatDate(statement.statementDate || statement.createdAt)}</span>
+          </div>
+          <div className={styles.metaBox}>
             <span className={styles.metaLabel}>Vendor Code</span>
             <span className={styles.metaValue}>{statement.vendorCode}</span>
           </div>
@@ -171,20 +175,17 @@ export default function ViewRecordPage({
           <table className={styles.table}>
             <thead>
               <tr>
-                <th colSpan={4} style={{ textAlign: 'center', backgroundColor: 'rgba(16, 185, 129, 0.08)', color: 'var(--accent-green)', fontWeight: 700, letterSpacing: '1px' }}>
+                <th colSpan={2} style={{ textAlign: 'center', backgroundColor: 'rgba(16, 185, 129, 0.08)', color: 'var(--accent-green)', fontWeight: 700, letterSpacing: '1px' }}>
                   INWARD
                 </th>
-                <th colSpan={2} style={{ textAlign: 'center', backgroundColor: 'rgba(59, 130, 246, 0.08)', color: '#60a5fa', fontWeight: 700, letterSpacing: '1px' }}>
+                <th colSpan={1} style={{ textAlign: 'center', backgroundColor: 'rgba(59, 130, 246, 0.08)', color: '#60a5fa', fontWeight: 700, letterSpacing: '1px' }}>
                   DESPATCHES
                 </th>
               </tr>
               <tr>
-                <th style={{ width: '60px' }}>S.No.</th>
-                <th style={{ width: '140px' }}>DA No.</th>
-                <th style={{ width: '140px' }}>Date</th>
-                <th>Part No.</th>
-                <th style={{ width: '180px' }}>Despatches</th>
-                <th style={{ textAlign: 'right', width: '160px' }}>Closing Stock</th>
+                <th style={{ width: '80px' }}>S.No.</th>
+                <th>DA No.</th>
+                <th style={{ textAlign: 'right', width: '220px' }}>Closing Stock</th>
               </tr>
             </thead>
             <tbody>
@@ -192,9 +193,6 @@ export default function ViewRecordPage({
                 <tr key={item.id} className={styles.row}>
                   <td className={styles.sNoCell}>{item.serialNumber}</td>
                   <td>{item.daNumber || '—'}</td>
-                  <td>{formatDate(item.entryDate)}</td>
-                  <td className={styles.partNoCell}>{item.partNumber}</td>
-                  <td>{item.despatches || '—'}</td>
                   <td className={styles.numericCell}>{formatNumber(item.closingStock)}</td>
                 </tr>
               ))}

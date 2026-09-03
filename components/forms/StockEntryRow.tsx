@@ -50,39 +50,6 @@ export function StockEntryRow({
         </div>
       </td>
 
-      {/* Date */}
-      <td>
-        <input
-          type="date"
-          value={item.entryDate ? item.entryDate.substring(0, 10) : ''}
-          onChange={(e) => onChange(index, 'entryDate', e.target.value)}
-          className={`${styles.input} ${errors.entryDate ? styles.inputError : ''}`}
-          style={{ colorScheme: 'dark' }}
-        />
-      </td>
-
-      {/* Part No. */}
-      <td>
-        <input
-          type="text"
-          value={item.partNumber}
-          onChange={(e) => onChange(index, 'partNumber', e.target.value)}
-          placeholder="WI-PART-100"
-          className={`${styles.input} ${errors.partNumber ? styles.inputError : ''}`}
-        />
-      </td>
-
-      {/* Despatches (Optional text/number right above Closing Stock) */}
-      <td>
-        <input
-          type="text"
-          value={item.despatches || ''}
-          onChange={(e) => onChange(index, 'despatches', e.target.value)}
-          placeholder="Optional despatches"
-          className={styles.input}
-        />
-      </td>
-
       {/* Closing Stock */}
       <td>
         <input

@@ -48,12 +48,14 @@ export async function PUT(
       );
     }
 
-    const { industryName, vendorName, vendorCode, month, year, items } = parsed.data;
+    const { industryName, vendorName, vendorCode, month, year, statementDate, items } = parsed.data;
 
     const existing = await prisma.statement.findUnique({ where: { id } });
     if (!existing) {
       return NextResponse.json({ error: 'Statement not found' }, { status: 404 });
     }
+
+    const stmtDateObj = statementDate ? new Date(statementDate) : existing.statementDate || new Date();
 
     // Atomic Neon transaction: delete old items, update statement, create new items
     let updated = await prisma.$transaction(async (tx) => {
@@ -67,13 +69,14 @@ export async function PUT(
           vendorCode,
           month,
           year,
+          statementDate: stmtDateObj,
           pdfUrl: null, // Reset for new Blob upload
           items: {
             create: items.map((item, idx) => ({
               serialNumber: idx + 1,
               daNumber: item.daNumber || null,
-              entryDate: new Date(item.entryDate),
-              partNumber: item.partNumber,
+              entryDate: item.entryDate ? new Date(item.entryDate) : stmtDateObj,
+              partNumber: item.partNumber || '',
               despatches: item.despatches || null,
               openingStock: item.openingStock ?? 0,
               closingStock: item.closingStock,
@@ -93,11 +96,12 @@ export async function PUT(
     try {
       const formattedStatement: Statement = {
         ...updated,
+        statementDate: updated.statementDate ? updated.statementDate.toISOString() : null,
         createdAt: updated.createdAt.toISOString(),
         updatedAt: updated.updatedAt.toISOString(),
         items: updated.items.map((it) => ({
           ...it,
-          entryDate: it.entryDate.toISOString(),
+          entryDate: it.entryDate ? it.entryDate.toISOString() : null,
           openingStock: Number(it.openingStock),
           closingStock: Number(it.closingStock),
           createdAt: it.createdAt.toISOString(),

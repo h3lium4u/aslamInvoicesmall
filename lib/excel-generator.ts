@@ -6,7 +6,8 @@ const MONTHS = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
-function formatDate(d: string | Date): string {
+function formatDate(d?: string | Date | null): string {
+  if (!d) return '—';
   return new Date(d).toLocaleDateString('en-IN', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
@@ -44,11 +45,12 @@ export function generateMonthlyExcel(
 
   // ─── Sheet 1: Summary ───
   const summaryHeaders = [
-    'Statement ID', 'Vendor Name', 'Vendor Code', 'Industry',
+    'Statement ID', 'Statement Date', 'Vendor Name', 'Vendor Code', 'Industry',
     'Entries', 'Created At', 'Updated At',
   ];
   const summaryData = statements.map((s) => [
     s.statementNumber,
+    formatDate(s.statementDate || s.createdAt),
     s.vendorName,
     s.vendorCode,
     s.industryName,
@@ -58,35 +60,32 @@ export function generateMonthlyExcel(
   ]);
 
   const summaryWs = XLSX.utils.aoa_to_sheet([summaryHeaders, ...summaryData]);
-  summaryWs['!cols'] = [20, 30, 15, 22, 10, 22, 22].map((w) => ({ wch: w }));
+  summaryWs['!cols'] = [20, 16, 30, 15, 22, 10, 22, 22].map((w) => ({ wch: w }));
   summaryWs['!freeze'] = { xSplit: 0, ySplit: 1 };
-  applyHeaderStyle(summaryWs, `A1:G1`);
+  applyHeaderStyle(summaryWs, `A1:H1`);
   XLSX.utils.book_append_sheet(wb, summaryWs, 'Summary');
 
-  // ─── Sheet 2: Entries (No Opening Stock; Despatches added before Closing Stock) ───
+  // ─── Sheet 2: Entries (S.No, DA No., Closing Stock) ───
   const entriesHeaders = [
-    'Statement ID', 'S.No.', 'DA No.', 'Date', 'Part No.',
-    'Despatches', 'Closing Stock',
+    'Statement ID', 'Statement Date', 'S.No.', 'DA No.', 'Closing Stock',
   ];
   const entriesData: (string | number)[][] = [];
   for (const s of statements) {
     for (const item of s.items) {
       entriesData.push([
         s.statementNumber,
+        formatDate(s.statementDate || s.createdAt),
         item.serialNumber,
         item.daNumber || '',
-        formatDate(item.entryDate),
-        item.partNumber,
-        item.despatches || '',
         parseFloat(String(item.closingStock)),
       ]);
     }
   }
 
   const entriesWs = XLSX.utils.aoa_to_sheet([entriesHeaders, ...entriesData]);
-  entriesWs['!cols'] = [20, 7, 14, 14, 24, 20, 15].map((w) => ({ wch: w }));
+  entriesWs['!cols'] = [20, 16, 7, 18, 15].map((w) => ({ wch: w }));
   entriesWs['!freeze'] = { xSplit: 0, ySplit: 1 };
-  applyHeaderStyle(entriesWs, `A1:G1`);
+  applyHeaderStyle(entriesWs, `A1:E1`);
   XLSX.utils.book_append_sheet(wb, entriesWs, 'Entries');
 
   return XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' }) as Buffer;
@@ -122,11 +121,12 @@ export function generateYearlyExcel(
 
   // ─── Sheet 2: All Statements ───
   const stmtHeaders = [
-    'Statement ID', 'Vendor', 'Vendor Code', 'Month', 'Year',
+    'Statement ID', 'Statement Date', 'Vendor', 'Vendor Code', 'Month', 'Year',
     'Entries', 'Created At', 'Updated At',
   ];
   const stmtData = statements.map((s) => [
     s.statementNumber,
+    formatDate(s.statementDate || s.createdAt),
     s.vendorName,
     s.vendorCode,
     MONTHS[s.month - 1],
@@ -137,36 +137,33 @@ export function generateYearlyExcel(
   ]);
 
   const stmtWs = XLSX.utils.aoa_to_sheet([stmtHeaders, ...stmtData]);
-  stmtWs['!cols'] = [20, 28, 14, 12, 8, 10, 22, 22].map((w) => ({ wch: w }));
+  stmtWs['!cols'] = [20, 16, 28, 14, 12, 8, 10, 22, 22].map((w) => ({ wch: w }));
   stmtWs['!freeze'] = { xSplit: 0, ySplit: 1 };
-  applyHeaderStyle(stmtWs, `A1:H1`);
+  applyHeaderStyle(stmtWs, `A1:I1`);
   XLSX.utils.book_append_sheet(wb, stmtWs, 'All Statements');
 
-  // ─── Sheet 3: All Entries (No Opening Stock; Despatches added before Closing Stock) ───
+  // ─── Sheet 3: All Entries ───
   const allEntriesHeaders = [
-    'Statement ID', 'Month', 'S.No.', 'DA No.', 'Date',
-    'Part No.', 'Despatches', 'Closing Stock',
+    'Statement ID', 'Statement Date', 'Month', 'S.No.', 'DA No.', 'Closing Stock',
   ];
   const allEntriesData: (string | number)[][] = [];
   for (const s of statements) {
     for (const item of s.items) {
       allEntriesData.push([
         s.statementNumber,
+        formatDate(s.statementDate || s.createdAt),
         MONTHS[s.month - 1],
         item.serialNumber,
         item.daNumber || '',
-        formatDate(item.entryDate),
-        item.partNumber,
-        item.despatches || '',
         parseFloat(String(item.closingStock)),
       ]);
     }
   }
 
   const allEntriesWs = XLSX.utils.aoa_to_sheet([allEntriesHeaders, ...allEntriesData]);
-  allEntriesWs['!cols'] = [20, 12, 7, 14, 14, 24, 20, 15].map((w) => ({ wch: w }));
+  allEntriesWs['!cols'] = [20, 16, 12, 7, 18, 15].map((w) => ({ wch: w }));
   allEntriesWs['!freeze'] = { xSplit: 0, ySplit: 1 };
-  applyHeaderStyle(allEntriesWs, `A1:H1`);
+  applyHeaderStyle(allEntriesWs, `A1:F1`);
   XLSX.utils.book_append_sheet(wb, allEntriesWs, 'All Entries');
 
   return XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' }) as Buffer;

@@ -26,11 +26,12 @@ export async function GET(
     // Convert decimal items to standard numbers for PDF generator
     const formattedStatement: Statement = {
       ...statement,
+      statementDate: statement.statementDate ? statement.statementDate.toISOString() : null,
       createdAt: statement.createdAt.toISOString(),
       updatedAt: statement.updatedAt.toISOString(),
       items: statement.items.map((item) => ({
         ...item,
-        entryDate: item.entryDate.toISOString(),
+        entryDate: item.entryDate ? item.entryDate.toISOString() : null,
         openingStock: Number(item.openingStock),
         closingStock: Number(item.closingStock),
         createdAt: item.createdAt.toISOString(),

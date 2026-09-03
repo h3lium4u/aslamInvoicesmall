@@ -19,6 +19,7 @@ export interface ReceiptPrinterModalProps {
     vendorName?: string;
     month?: number;
     year?: number;
+    statementDate?: string;
     items?: {
       serialNumber?: number;
       daNumber?: string | null;
@@ -160,6 +161,12 @@ export function ReceiptPrinterModal({
                     <span className={styles.receiptValueBold}>WESTERN INDUSTRIES</span>
                   </div>
                   <div className={styles.receiptRow}>
+                    <span className={styles.receiptLabel}>DATE</span>
+                    <span className={styles.receiptValue}>
+                      {statementData?.statementDate ? new Date(statementData.statementDate).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN')}
+                    </span>
+                  </div>
+                  <div className={styles.receiptRow}>
                     <span className={styles.receiptLabel}>VENDOR CODE</span>
                     <span className={styles.receiptValue}>32210</span>
                   </div>
@@ -172,15 +179,14 @@ export function ReceiptPrinterModal({
                 {/* Items or Summary section */}
                 {reportType === 'statement' ? (
                   <div className={styles.receiptItemsSection}>
-                    <div className="flex justify-between text-[8px] font-bold text-emerald-700 border-b border-neutral-300 pb-0.5 mb-1">
-                      <span>[INWARD: S.NO / DA / PART]</span>
+                    <div className="flex justify-between text-[8px] font-bold text-emerald-400 border-b border-neutral-700 pb-0.5 mb-1">
+                      <span>[INWARD: S.NO / DA NO]</span>
                       <span>[DESPATCHES]</span>
                     </div>
                     <div className={styles.receiptItemHeader}>
                       <span className={styles.colSNo}>S.NO</span>
-                      <span className={styles.colDa}>DA NO</span>
-                      <span className={styles.colPart}>PART NO</span>
-                      <span className={styles.colClosing}>CLOSING</span>
+                      <span className={styles.colDa} style={{ flex: 1 }}>DA NO</span>
+                      <span className={styles.colClosing}>CLOSING STOCK</span>
                     </div>
 
                     {items.length === 0 ? (
@@ -189,8 +195,7 @@ export function ReceiptPrinterModal({
                       items.map((item, idx) => (
                         <div key={idx} className={styles.receiptItemRow}>
                           <span className={styles.colSNo}>{idx + 1}</span>
-                          <span className={styles.colDa}>{item.daNumber || '—'}</span>
-                          <span className={styles.colPart}>{item.partNumber || '—'}</span>
+                          <span className={styles.colDa} style={{ flex: 1 }}>{item.daNumber || '—'}</span>
                           <span className={styles.colClosing}>{item.closingStock ?? 0}</span>
                         </div>
                       ))

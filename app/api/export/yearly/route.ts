@@ -29,11 +29,12 @@ export async function GET(request: NextRequest) {
 
     const statements: Statement[] = rawStatements.map((s) => ({
       ...s,
+      statementDate: s.statementDate ? s.statementDate.toISOString() : null,
       createdAt: s.createdAt.toISOString(),
       updatedAt: s.updatedAt.toISOString(),
       items: s.items.map((item) => ({
         ...item,
-        entryDate: item.entryDate.toISOString(),
+        entryDate: item.entryDate ? item.entryDate.toISOString() : null,
         openingStock: Number(item.openingStock),
         closingStock: Number(item.closingStock),
         createdAt: item.createdAt.toISOString(),

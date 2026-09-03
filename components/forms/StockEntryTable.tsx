@@ -22,15 +22,10 @@ export function StockEntryTable({ items, onChange, errors = [] }: StockEntryTabl
   };
 
   const handleAddRow = () => {
-    const today = new Date().toISOString().split('T')[0];
-    const lastItem = items[items.length - 1];
     onChange([
       ...items,
       {
         daNumber: '',
-        entryDate: lastItem ? lastItem.entryDate : today,
-        partNumber: '',
-        despatches: '',
         openingStock: 0,
         closingStock: 0,
       },
@@ -48,26 +43,23 @@ export function StockEntryTable({ items, onChange, errors = [] }: StockEntryTabl
       <div className={styles.tableScroll}>
         <table className={styles.table}>
           <thead>
-            {/* Top Super-Headers: INWARD (4 cols) and DESPATCHES (2 cols) */}
+            {/* Top Super-Headers: INWARD (2 cols) and DESPATCHES (1 col) */}
             <tr>
-              <th colSpan={4} className={styles.superHeaderInward}>
+              <th colSpan={2} className={styles.superHeaderInward}>
                 INWARD
               </th>
-              <th colSpan={2} className={styles.superHeaderDespatches}>
+              <th colSpan={1} className={styles.superHeaderDespatches}>
                 DESPATCHES
               </th>
-              <th rowSpan={2} style={{ width: '80px', textAlign: 'center', verticalAlign: 'middle' }}>
+              <th rowSpan={2} style={{ width: '90px', textAlign: 'center', verticalAlign: 'middle' }}>
                 Action
               </th>
             </tr>
             {/* Sub-Headers */}
             <tr>
-              <th style={{ width: '50px' }}>S.No.</th>
-              <th style={{ width: '180px' }}>DA No. *</th>
-              <th style={{ width: '145px' }}>Date *</th>
-              <th style={{ width: '160px' }}>Part No. *</th>
-              <th style={{ width: '180px' }}>Despatches</th>
-              <th style={{ width: '140px', textAlign: 'right' }}>Closing Stock *</th>
+              <th style={{ width: '70px' }}>S.No.</th>
+              <th>DA No. *</th>
+              <th style={{ width: '220px', textAlign: 'right' }}>Closing Stock *</th>
             </tr>
           </thead>
           <tbody>

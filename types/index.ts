@@ -3,8 +3,8 @@ export interface StatementItem {
   statementId: string;
   serialNumber: number;
   daNumber: string | null;
-  entryDate: string; // ISO date string
-  partNumber: string;
+  entryDate?: string | null; // ISO date string
+  partNumber?: string | null;
   despatches?: string | null;
   openingStock: number;
   closingStock: number;
@@ -20,6 +20,7 @@ export interface Statement {
   vendorCode: string;
   month: number;
   year: number;
+  statementDate?: string | null; // ISO date string
   status: string;
   pdfUrl: string | null;
   createdAt: string;
@@ -35,6 +36,7 @@ export interface StatementListItem {
   vendorCode: string;
   month: number;
   year: number;
+  statementDate?: string | null;
   status: string;
   pdfUrl: string | null;
   createdAt: string;

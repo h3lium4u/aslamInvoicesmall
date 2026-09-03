@@ -92,9 +92,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { industryName, vendorName, vendorCode, month, year, items } = parsed.data;
+    const { industryName, vendorName, vendorCode, month, year, statementDate, items } = parsed.data;
 
     const statementNumber = await generateStatementNumber(month, year);
+    const stmtDateObj = statementDate ? new Date(statementDate) : new Date();
 
     // Create statement + items in Neon PostgreSQL
     let statement = await prisma.statement.create({
@@ -105,13 +106,14 @@ export async function POST(request: NextRequest) {
         vendorCode,
         month,
         year,
+        statementDate: stmtDateObj,
         status: 'saved',
         items: {
           create: items.map((item, idx) => ({
             serialNumber: idx + 1,
             daNumber: item.daNumber || null,
-            entryDate: new Date(item.entryDate),
-            partNumber: item.partNumber,
+            entryDate: item.entryDate ? new Date(item.entryDate) : stmtDateObj,
+            partNumber: item.partNumber || '',
             despatches: item.despatches || null,
             openingStock: item.openingStock ?? 0,
             closingStock: item.closingStock,
@@ -125,11 +127,12 @@ export async function POST(request: NextRequest) {
     try {
       const formattedStatement: Statement = {
         ...statement,
+        statementDate: statement.statementDate ? statement.statementDate.toISOString() : null,
         createdAt: statement.createdAt.toISOString(),
         updatedAt: statement.updatedAt.toISOString(),
         items: statement.items.map((it) => ({
           ...it,
-          entryDate: it.entryDate.toISOString(),
+          entryDate: it.entryDate ? it.entryDate.toISOString() : null,
           openingStock: Number(it.openingStock),
           closingStock: Number(it.closingStock),
           createdAt: it.createdAt.toISOString(),

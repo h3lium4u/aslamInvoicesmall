@@ -104,23 +104,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 0.5,
     borderBottomColor: '#DDDDDD',
-    paddingVertical: 5,
+    paddingVertical: 6,
     paddingHorizontal: 4,
   },
   tableRowAlt: {
     backgroundColor: '#F9F9F9',
   },
   tableCell: {
-    fontSize: 8.5,
+    fontSize: 9,
     color: '#333333',
   },
-  // Column widths
-  colSno: { width: '6%' },
-  colDa: { width: '15%' },
-  colDate: { width: '15%' },
-  colPart: { width: '28%' },
-  colDespatches: { width: '18%' },
-  colClose: { width: '18%', textAlign: 'right' },
+  // Column widths: INWARD (60%) & DESPATCHES (40%)
+  colSno: { width: '15%' },
+  colDa: { width: '45%' },
+  colClose: { width: '40%', textAlign: 'right' },
   // Footer
   footer: {
     position: 'absolute',
@@ -145,9 +142,10 @@ const styles = StyleSheet.create({
 
 const ROWS_PER_PAGE = 28;
 
-function formatDate(dateStr: string | Date): string {
+function formatDate(dateStr?: string | Date | null): string {
+  if (!dateStr) return '—';
   const d = new Date(dateStr);
-  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
 function formatNumber(n: number | string): string {
@@ -174,6 +172,8 @@ export function StockStatementDocument({ statement, generatedAt }: PDFDocumentPr
     hour: '2-digit', minute: '2-digit', hour12: true,
   });
 
+  const stmtDateFormatted = formatDate(statement.statementDate || statement.createdAt);
+
   return (
     <Document title={`${statement.statementNumber} - Stock Statement`}>
       {pages.map((pageItems, pageIdx) => (
@@ -196,6 +196,10 @@ export function StockStatementDocument({ statement, generatedAt }: PDFDocumentPr
                 <Text style={[styles.statementBadge]}>{statement.statementNumber}</Text>
               </View>
               <View style={styles.metaBlock}>
+                <Text style={styles.metaLabel}>Date</Text>
+                <Text style={styles.metaValue}>{stmtDateFormatted}</Text>
+              </View>
+              <View style={styles.metaBlock}>
                 <Text style={styles.metaLabel}>Vendor Code</Text>
                 <Text style={styles.metaValue}>{statement.vendorCode}</Text>
               </View>
@@ -213,12 +217,12 @@ export function StockStatementDocument({ statement, generatedAt }: PDFDocumentPr
 
           {/* Table */}
           <View style={styles.table}>
-            {/* Top Super-Header Row: INWARD (64%) & DESPATCHES (36%) */}
+            {/* Top Super-Header Row: INWARD (60%) & DESPATCHES (40%) */}
             <View style={{ flexDirection: 'row', marginBottom: 1 }}>
-              <Text style={{ width: '64%', backgroundColor: '#10b981', color: '#FFFFFF', fontSize: 8, fontFamily: 'Helvetica-Bold', textAlign: 'center', paddingVertical: 3, letterSpacing: 1 }}>
+              <Text style={{ width: '60%', backgroundColor: '#10b981', color: '#FFFFFF', fontSize: 8, fontFamily: 'Helvetica-Bold', textAlign: 'center', paddingVertical: 3, letterSpacing: 1 }}>
                 INWARD
               </Text>
-              <Text style={{ width: '36%', backgroundColor: '#3b82f6', color: '#FFFFFF', fontSize: 8, fontFamily: 'Helvetica-Bold', textAlign: 'center', paddingVertical: 3, letterSpacing: 1 }}>
+              <Text style={{ width: '40%', backgroundColor: '#3b82f6', color: '#FFFFFF', fontSize: 8, fontFamily: 'Helvetica-Bold', textAlign: 'center', paddingVertical: 3, letterSpacing: 1 }}>
                 DESPATCHES
               </Text>
             </View>
@@ -226,9 +230,6 @@ export function StockStatementDocument({ statement, generatedAt }: PDFDocumentPr
             <View style={styles.tableHeader}>
               <Text style={[styles.tableHeaderText, styles.colSno]}>S.No</Text>
               <Text style={[styles.tableHeaderText, styles.colDa]}>DA No.</Text>
-              <Text style={[styles.tableHeaderText, styles.colDate]}>Date</Text>
-              <Text style={[styles.tableHeaderText, styles.colPart]}>Part No.</Text>
-              <Text style={[styles.tableHeaderText, styles.colDespatches]}>Despatches</Text>
               <Text style={[styles.tableHeaderText, styles.colClose]}>Closing Stock</Text>
             </View>
 
@@ -239,9 +240,6 @@ export function StockStatementDocument({ statement, generatedAt }: PDFDocumentPr
               >
                 <Text style={[styles.tableCell, styles.colSno]}>{item.serialNumber}</Text>
                 <Text style={[styles.tableCell, styles.colDa]}>{item.daNumber || '—'}</Text>
-                <Text style={[styles.tableCell, styles.colDate]}>{formatDate(item.entryDate)}</Text>
-                <Text style={[styles.tableCell, styles.colPart]}>{item.partNumber}</Text>
-                <Text style={[styles.tableCell, styles.colDespatches]}>{item.despatches || '—'}</Text>
                 <Text style={[styles.tableCell, styles.colClose]}>{formatNumber(item.closingStock)}</Text>
               </View>
             ))}
@@ -249,8 +247,9 @@ export function StockStatementDocument({ statement, generatedAt }: PDFDocumentPr
 
           {/* Footer */}
           <View style={styles.footer} fixed>
-            <Text style={styles.footerText}>Generated on {generatedStr}</Text>
-            <Text style={styles.footerText}>{statement.industryName} — {statement.statementNumber}</Text>
+            <Text style={styles.footerText}>
+              WESTERN INDUSTRIES — OFFICIAL DIGITAL REGISTER | Generated: {generatedStr}
+            </Text>
             <Text
               style={styles.pageNumber}
               render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}

@@ -27,14 +27,12 @@ const MONTHS = [
 const currentYear = new Date().getFullYear();
 const YEARS = Array.from({ length: 11 }, (_, i) => currentYear - 5 + i);
 
-// Helper to check if a row has any user-entered content
+// Helper to check if a row has any user-entered content (DA No or Closing Stock)
 function isRowFilled(item: StatementItemInput): boolean {
   const da = (item.daNumber || '').replace(/^DA-?/i, '').trim();
-  const part = (item.partNumber || '').trim();
-  const desp = (item.despatches || '').trim();
   const closing = Number(item.closingStock) || 0;
 
-  return Boolean(da || part || desp || closing > 0);
+  return Boolean(da || closing > 0);
 }
 
 interface StatementFormProps {
@@ -57,23 +55,22 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
   const [year, setYear] = useState<number>(
     initialData?.year || new Date().getFullYear()
   );
+  const [statementDate, setStatementDate] = useState<string>(
+    initialData?.statementDate
+      ? new Date(initialData.statementDate).toISOString().split('T')[0]
+      : todayStr
+  );
 
   // Initialize with 10 rows by default if creating a new entry
   const [items, setItems] = useState<StatementItemInput[]>(
     initialData?.items
       ? initialData.items.map((it) => ({
           daNumber: it.daNumber || '',
-          entryDate: new Date(it.entryDate).toISOString().split('T')[0],
-          partNumber: it.partNumber,
-          despatches: it.despatches || '',
           openingStock: Number(it.openingStock),
           closingStock: Number(it.closingStock),
         }))
       : Array.from({ length: 10 }, () => ({
           daNumber: '',
-          entryDate: todayStr,
-          partNumber: '',
-          despatches: '',
           openingStock: 0,
           closingStock: 0,
         }))
@@ -117,8 +114,6 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
 
       // Only validate row if it has content
       if (isRowFilled(item)) {
-        if (!item.entryDate) rErr.entryDate = 'Required';
-        if (!item.partNumber || !item.partNumber.trim()) rErr.partNumber = 'Required';
         if (isNaN(item.closingStock) || item.closingStock < 0)
           rErr.closingStock = 'Invalid stock number';
       }
@@ -153,11 +148,12 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
       vendorName,
       month,
       year,
+      statementDate,
       items: filledItems.map((it) => ({
         ...it,
         daNumber: it.daNumber?.trim() || undefined,
-        partNumber: it.partNumber.trim(),
-        despatches: it.despatches?.trim() || undefined,
+        entryDate: statementDate,
+        partNumber: '',
         openingStock: Number(it.openingStock) || 0,
         closingStock: Number(it.closingStock),
       })),
@@ -223,6 +219,7 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
         vendorName: saved.vendorName,
         month: saved.month,
         year: saved.year,
+        statementDate: saved.statementDate || statementDate,
         items: saved.items,
       });
     } else {
@@ -287,7 +284,7 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
             />
             <h2 className={styles.sectionTitle}>Header Information</h2>
           </div>
-          <span className={styles.sectionBadge}>FIXED COMPANY METADATA</span>
+          <span className={styles.sectionBadge}>STATEMENT METADATA</span>
         </div>
 
         <div className={styles.grid}>
@@ -321,6 +318,21 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
               value={vendorName}
               readOnly
               className={`${styles.input} ${styles.readOnlyInput}`}
+            />
+          </div>
+
+          {/* Date Picker (Header Level) */}
+          <div className={styles.fieldGroup}>
+            <label className={styles.label}>Statement Date *</label>
+            <input
+              type="date"
+              value={statementDate}
+              onChange={(e) => {
+                setStatementDate(e.target.value);
+                setIsDirty(true);
+              }}
+              className={styles.input}
+              style={{ colorScheme: 'dark' }}
             />
           </div>
 
@@ -368,7 +380,7 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
       <div className={styles.sectionCard}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>Stock Entry Table</h2>
-          <span className={styles.sectionBadge}>10 INITIAL ROWS — UNFILLED ROWS IGNORED ON SAVE</span>
+          <span className={styles.sectionBadge}>INWARD (DA NO) & DESPATCHES (CLOSING STOCK)</span>
         </div>
 
         <StockEntryTable
