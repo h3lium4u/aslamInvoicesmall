@@ -9,24 +9,6 @@ import { Toast } from '@/components/ui/Toast';
 import { ReceiptPrinterModal } from '@/components/animation/ReceiptPrinterModal';
 import styles from './StatementForm.module.css';
 
-const MONTHS = [
-  { value: 1, label: 'January' },
-  { value: 2, label: 'February' },
-  { value: 3, label: 'March' },
-  { value: 4, label: 'April' },
-  { value: 5, label: 'May' },
-  { value: 6, label: 'June' },
-  { value: 7, label: 'July' },
-  { value: 8, label: 'August' },
-  { value: 9, label: 'September' },
-  { value: 10, label: 'October' },
-  { value: 11, label: 'November' },
-  { value: 12, label: 'December' },
-];
-
-const currentYear = new Date().getFullYear();
-const YEARS = Array.from({ length: 11 }, (_, i) => currentYear - 5 + i);
-
 // Helper to check if a row has any user-entered content (DA No or Closing Stock)
 function isRowFilled(item: StatementItemInput): boolean {
   const da = (item.daNumber || '').replace(/^DA-?/i, '').trim();
@@ -49,17 +31,20 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
   const vendorCode = '32210';
   const vendorName = 'TVS';
 
-  const [month, setMonth] = useState<number>(
-    initialData?.month || new Date().getMonth() + 1
-  );
-  const [year, setYear] = useState<number>(
-    initialData?.year || new Date().getFullYear()
-  );
   const [statementDate, setStatementDate] = useState<string>(
     initialData?.statementDate
       ? new Date(initialData.statementDate).toISOString().split('T')[0]
       : todayStr
   );
+
+  // Automatically derive month and year from selected statement date
+  const dateObj = new Date(statementDate);
+  const derivedMonth = !isNaN(dateObj.getTime())
+    ? dateObj.getMonth() + 1
+    : (initialData?.month || new Date().getMonth() + 1);
+  const derivedYear = !isNaN(dateObj.getTime())
+    ? dateObj.getFullYear()
+    : (initialData?.year || new Date().getFullYear());
 
   // Initialize with 10 rows by default if creating a new entry
   const [items, setItems] = useState<StatementItemInput[]>(
@@ -146,8 +131,8 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
       industryName,
       vendorCode,
       vendorName,
-      month,
-      year,
+      month: derivedMonth,
+      year: derivedYear,
       statementDate,
       items: filledItems.map((it) => ({
         ...it,
@@ -217,8 +202,8 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
         industryName: saved.industryName,
         vendorCode: saved.vendorCode,
         vendorName: saved.vendorName,
-        month: saved.month,
-        year: saved.year,
+        month: saved.month || derivedMonth,
+        year: saved.year || derivedYear,
         statementDate: saved.statementDate || statementDate,
         items: saved.items,
       });
@@ -321,7 +306,7 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
             />
           </div>
 
-          {/* Date Picker (Header Level) */}
+          {/* Date Picker (Header Level - Only Date) */}
           <div className={styles.fieldGroup}>
             <label className={styles.label}>Statement Date *</label>
             <input
@@ -334,44 +319,6 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
               className={styles.input}
               style={{ colorScheme: 'light' }}
             />
-          </div>
-
-          {/* Month (Selectable) */}
-          <div className={styles.fieldGroup}>
-            <label className={styles.label}>Month *</label>
-            <select
-              value={month}
-              onChange={(e) => {
-                setMonth(parseInt(e.target.value, 10));
-                setIsDirty(true);
-              }}
-              className={styles.input}
-            >
-              {MONTHS.map((m) => (
-                <option key={m.value} value={m.value}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Year (Selectable) */}
-          <div className={styles.fieldGroup}>
-            <label className={styles.label}>Year *</label>
-            <select
-              value={year}
-              onChange={(e) => {
-                setYear(parseInt(e.target.value, 10));
-                setIsDirty(true);
-              }}
-              className={styles.input}
-            >
-              {YEARS.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </select>
           </div>
         </div>
       </div>
