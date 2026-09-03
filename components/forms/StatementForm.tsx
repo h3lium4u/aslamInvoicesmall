@@ -332,7 +332,7 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
                 setIsDirty(true);
               }}
               className={styles.input}
-              style={{ colorScheme: 'dark' }}
+              style={{ colorScheme: 'light' }}
             />
           </div>
 

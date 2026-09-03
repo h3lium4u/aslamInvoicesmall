@@ -3,6 +3,7 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .tableScroll {
@@ -13,11 +14,11 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
-  min-width: 850px;
+  min-width: 600px;
 }
 
 .table th {
-  background-color: var(--bg-secondary);
+  background-color: #f8fafc;
   color: var(--text-secondary);
   font-weight: 600;
   font-size: 11px;
@@ -29,8 +30,8 @@
 }
 
 .superHeaderInward {
-  background-color: rgba(16, 185, 129, 0.08) !important;
-  color: var(--accent-green) !important;
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
   font-weight: 700 !important;
   text-align: center !important;
   border-right: 1px solid var(--border-subtle) !important;
@@ -40,8 +41,8 @@
 }
 
 .superHeaderDespatches {
-  background-color: rgba(59, 130, 246, 0.08) !important;
-  color: #60a5fa !important;
+  background-color: #eff6ff !important;
+  color: #1d4ed8 !important;
   font-weight: 700 !important;
   text-align: center !important;
   border-bottom: 1px solid var(--border-subtle) !important;
@@ -55,7 +56,7 @@
 }
 
 .row:hover {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: #f8fafc;
 }
 
 .row td {
@@ -71,25 +72,25 @@
 .input {
   width: 100%;
   padding: 6px 10px;
-  background-color: var(--bg-input);
+  background-color: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-size: 13px;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 .input::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(10);
+  filter: none;
   cursor: pointer;
-  opacity: 1;
+  opacity: 0.8;
 }
 
 /* DA Input with un-editable prefix and transparent 001 placeholder */
 .daInputWrapper {
   display: flex;
   align-items: center;
-  background-color: var(--bg-input);
+  background-color: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   overflow: hidden;
@@ -101,9 +102,9 @@
 }
 
 .daPrefix {
-  padding: 6px 8px;
-  background-color: var(--bg-secondary);
-  color: var(--text-secondary);
+  padding: 6px 10px;
+  background-color: #f1f5f9;
+  color: #1e293b;
   font-weight: 700;
   font-size: 12px;
   border-right: 1px solid var(--border-subtle);
@@ -121,7 +122,7 @@
 }
 
 .daInput::placeholder {
-  color: rgba(255, 255, 255, 0.25);
+  color: #94a3b8;
   font-style: italic;
 }
 
@@ -155,13 +156,13 @@
 }
 
 .removeBtn:disabled {
-  opacity: 0.2;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
 .tableFooter {
   padding: 12px 16px;
-  background-color: var(--bg-secondary);
+  background-color: #f8fafc;
   border-top: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
@@ -170,7 +171,7 @@
 
 .addRowBtn {
   padding: 6px 14px;
-  background-color: var(--bg-card);
+  background-color: #ffffff;
   border: 1px dashed var(--accent-green-border);
   border-radius: var(--radius-sm);
   font-size: 13px;
