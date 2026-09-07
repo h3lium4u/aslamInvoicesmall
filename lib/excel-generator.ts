@@ -65,9 +65,9 @@ export function generateMonthlyExcel(
   applyHeaderStyle(summaryWs, `A1:H1`);
   XLSX.utils.book_append_sheet(wb, summaryWs, 'Summary');
 
-  // ─── Sheet 2: Entries (S.No, DA No., Closing Stock) ───
+  // ─── Sheet 2: Entries (S.No, DA No., Part No., Closing Stock) ───
   const entriesHeaders = [
-    'Statement ID', 'Statement Date', 'S.No.', 'DA No.', 'Closing Stock',
+    'Statement ID', 'Statement Date', 'S.No.', 'DA No.', 'Part No.', 'Closing Stock',
   ];
   const entriesData: (string | number)[][] = [];
   for (const s of statements) {
@@ -77,15 +77,16 @@ export function generateMonthlyExcel(
         formatDate(s.statementDate || s.createdAt),
         item.serialNumber,
         item.daNumber || '',
+        item.partNumber || '',
         parseFloat(String(item.closingStock)),
       ]);
     }
   }
 
   const entriesWs = XLSX.utils.aoa_to_sheet([entriesHeaders, ...entriesData]);
-  entriesWs['!cols'] = [20, 16, 7, 18, 15].map((w) => ({ wch: w }));
+  entriesWs['!cols'] = [20, 16, 7, 18, 18, 15].map((w) => ({ wch: w }));
   entriesWs['!freeze'] = { xSplit: 0, ySplit: 1 };
-  applyHeaderStyle(entriesWs, `A1:E1`);
+  applyHeaderStyle(entriesWs, `A1:F1`);
   XLSX.utils.book_append_sheet(wb, entriesWs, 'Entries');
 
   return XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' }) as Buffer;
@@ -144,7 +145,7 @@ export function generateYearlyExcel(
 
   // ─── Sheet 3: All Entries ───
   const allEntriesHeaders = [
-    'Statement ID', 'Statement Date', 'Month', 'S.No.', 'DA No.', 'Closing Stock',
+    'Statement ID', 'Statement Date', 'Month', 'S.No.', 'DA No.', 'Part No.', 'Closing Stock',
   ];
   const allEntriesData: (string | number)[][] = [];
   for (const s of statements) {
@@ -155,15 +156,16 @@ export function generateYearlyExcel(
         MONTHS[s.month - 1],
         item.serialNumber,
         item.daNumber || '',
+        item.partNumber || '',
         parseFloat(String(item.closingStock)),
       ]);
     }
   }
 
   const allEntriesWs = XLSX.utils.aoa_to_sheet([allEntriesHeaders, ...allEntriesData]);
-  allEntriesWs['!cols'] = [20, 16, 12, 7, 18, 15].map((w) => ({ wch: w }));
+  allEntriesWs['!cols'] = [20, 16, 12, 7, 18, 18, 15].map((w) => ({ wch: w }));
   allEntriesWs['!freeze'] = { xSplit: 0, ySplit: 1 };
-  applyHeaderStyle(allEntriesWs, `A1:F1`);
+  applyHeaderStyle(allEntriesWs, `A1:G1`);
   XLSX.utils.book_append_sheet(wb, allEntriesWs, 'All Entries');
 
   return XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' }) as Buffer;

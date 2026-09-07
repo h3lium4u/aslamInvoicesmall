@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   superHeaderInward: {
-    width: '60%',
+    width: '70%',
     backgroundColor: '#059669',
     color: '#FFFFFF',
     fontSize: 8.5,
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   superHeaderDespatches: {
-    width: '40%',
+    width: '30%',
     backgroundColor: '#2563eb',
     color: '#FFFFFF',
     fontSize: 8.5,
@@ -163,10 +163,11 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: '#1e293b',
   },
-  // Column widths: INWARD (60%) & DESPATCHES (40%)
-  colSno: { width: '15%' },
-  colDa: { width: '45%' },
-  colClose: { width: '40%', textAlign: 'right' },
+  // Column widths: INWARD (70%) & DESPATCHES (30%)
+  colSno: { width: '10%' },
+  colDa: { width: '30%' },
+  colPart: { width: '30%' },
+  colClose: { width: '30%', textAlign: 'right' },
   // Summary Row
   summaryRow: {
     flexDirection: 'row',
@@ -177,13 +178,13 @@ const styles = StyleSheet.create({
     borderTopColor: '#0f172a',
   },
   summaryTextInward: {
-    width: '60%',
+    width: '70%',
     fontSize: 8.5,
     fontFamily: 'Helvetica-Bold',
     color: '#0f172a',
   },
   summaryTextDespatches: {
-    width: '40%',
+    width: '30%',
     fontSize: 9,
     fontFamily: 'Helvetica-Bold',
     color: '#059669',
@@ -310,6 +311,7 @@ export function StockStatementDocument({ statement, generatedAt }: PDFDocumentPr
               <View style={styles.tableHeaderRow}>
                 <Text style={[styles.tableHeaderText, styles.colSno]}>S.No</Text>
                 <Text style={[styles.tableHeaderText, styles.colDa]}>DA No.</Text>
+                <Text style={[styles.tableHeaderText, styles.colPart]}>Part No.</Text>
                 <Text style={[styles.tableHeaderText, styles.colClose]}>Closing Stock</Text>
               </View>
 
@@ -321,6 +323,7 @@ export function StockStatementDocument({ statement, generatedAt }: PDFDocumentPr
                 >
                   <Text style={[styles.tableCell, styles.colSno]}>{item.serialNumber}</Text>
                   <Text style={[styles.tableCell, styles.colDa]}>{item.daNumber || '—'}</Text>
+                  <Text style={[styles.tableCell, styles.colPart]}>{item.partNumber || '—'}</Text>
                   <Text style={[styles.tableCell, styles.colClose]}>{formatNumber(item.closingStock)}</Text>
                 </View>
               ))}

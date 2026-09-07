@@ -9,12 +9,13 @@ import { Toast } from '@/components/ui/Toast';
 import { ReceiptPrinterModal } from '@/components/animation/ReceiptPrinterModal';
 import styles from './StatementForm.module.css';
 
-// Helper to check if a row has any user-entered content (DA No or Closing Stock)
+// Helper to check if a row has any user-entered content (DA No, Part No, or Closing Stock)
 function isRowFilled(item: StatementItemInput): boolean {
   const da = (item.daNumber || '').replace(/^DA-?/i, '').trim();
+  const part = (item.partNumber || '').trim();
   const closing = Number(item.closingStock) || 0;
 
-  return Boolean(da || closing > 0);
+  return Boolean(da || part || closing > 0);
 }
 
 interface StatementFormProps {
@@ -51,11 +52,13 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
     initialData?.items
       ? initialData.items.map((it) => ({
           daNumber: it.daNumber || '',
+          partNumber: it.partNumber || '',
           openingStock: Number(it.openingStock),
           closingStock: Number(it.closingStock),
         }))
       : Array.from({ length: 10 }, () => ({
           daNumber: '',
+          partNumber: '',
           openingStock: 0,
           closingStock: 0,
         }))
@@ -138,7 +141,7 @@ export function StatementForm({ initialData, isEditing = false }: StatementFormP
         ...it,
         daNumber: it.daNumber?.trim() || undefined,
         entryDate: statementDate,
-        partNumber: '',
+        partNumber: it.partNumber?.trim() || '',
         openingStock: Number(it.openingStock) || 0,
         closingStock: Number(it.closingStock),
       })),

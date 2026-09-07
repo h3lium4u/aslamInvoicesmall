@@ -50,6 +50,17 @@ export function StockEntryRow({
         </div>
       </td>
 
+      {/* Part No. */}
+      <td>
+        <input
+          type="text"
+          value={item.partNumber || ''}
+          onChange={(e) => onChange(index, 'partNumber', e.target.value)}
+          placeholder="e.g. m66500"
+          className={`${styles.input} ${errors.partNumber ? styles.inputError : ''}`}
+        />
+      </td>
+
       {/* Closing Stock */}
       <td>
         <input

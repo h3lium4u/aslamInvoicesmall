@@ -180,13 +180,14 @@ export function ReceiptPrinterModal({
                 {reportType === 'statement' ? (
                   <div className={styles.receiptItemsSection}>
                     <div className="flex justify-between text-[8px] font-bold text-emerald-400 border-b border-neutral-700 pb-0.5 mb-1">
-                      <span>[INWARD: S.NO / DA NO]</span>
+                      <span>[INWARD: S.NO / DA / PART]</span>
                       <span>[DESPATCHES]</span>
                     </div>
                     <div className={styles.receiptItemHeader}>
                       <span className={styles.colSNo}>S.NO</span>
-                      <span className={styles.colDa} style={{ flex: 1 }}>DA NO</span>
-                      <span className={styles.colClosing}>CLOSING STOCK</span>
+                      <span className={styles.colDa}>DA NO</span>
+                      <span className={styles.colPart}>PART NO</span>
+                      <span className={styles.colClosing}>CLOSING</span>
                     </div>
 
                     {items.length === 0 ? (
@@ -195,7 +196,8 @@ export function ReceiptPrinterModal({
                       items.map((item, idx) => (
                         <div key={idx} className={styles.receiptItemRow}>
                           <span className={styles.colSNo}>{idx + 1}</span>
-                          <span className={styles.colDa} style={{ flex: 1 }}>{item.daNumber || '—'}</span>
+                          <span className={styles.colDa}>{item.daNumber || '—'}</span>
+                          <span className={styles.colPart}>{item.partNumber || '—'}</span>
                           <span className={styles.colClosing}>{item.closingStock ?? 0}</span>
                         </div>
                       ))
